@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -100,6 +101,13 @@ func saveDashboardJSON(apiKey, grafanaHost, uid, title, folderTitle string) {
 		return
 	}
 
+	// Here we format the JSON data
+    var prettyJSON bytes.Buffer
+    if err := json.Indent(&prettyJSON, body, "", "    "); err != nil {
+        fmt.Println("Error formatting JSON for dashboard", title, ":", err)
+        return
+    }
+
 	folderPath := fmt.Sprintf("./%s/%s", "nodeinfra-grafana-dashboard-json-model", strings.ReplaceAll(folderTitle, " ", "_"))
 	if err := os.MkdirAll(folderPath, os.ModePerm); err != nil {
 		fmt.Println("Error creating directory for dashboard", folderTitle, ":", err)
@@ -107,7 +115,7 @@ func saveDashboardJSON(apiKey, grafanaHost, uid, title, folderTitle string) {
 	}
 
 	filename := fmt.Sprintf("%s/%s.json", folderPath, strings.ReplaceAll(title, " ", "_"))
-	if err := ioutil.WriteFile(filename, body, 0644); err != nil {
+	if err := ioutil.WriteFile(filename, prettyJSON.Bytes(), 0644); err != nil {
 		fmt.Println("Error writing JSON to file for dashboard", title, ":", err)
 		return
 	}
