@@ -47,8 +47,6 @@ func main() {
 			saveDashboardJSON(ALERT_RULES_READ_ONLY_API_KEY, grafanaHost, dashboard.UID, dashboard.Title, dashboard.FolderTitle)
 		}
 	}
-
-	gitPush()
 }
 
 func getAllDashboards(apiKey, grafanaHost string) ([]DashboardSearchResult, error) {
@@ -114,9 +112,12 @@ func saveDashboardJSON(apiKey, grafanaHost, uid, title, folderTitle string) {
 
 	fmt.Println("Saved dashboard", title, "to", filename)
 
+	commitMessage := "Saved dashboard" + title + "to" + filename
+	gitPush(commitMessage)
+
 }
 
-func gitPush() {
+func gitPush(commitMessage string) {
 	// 변경할 디렉토리 설정
 	repoDir := "nodeinfra-grafana-dashboard-json-model/"
 	err := os.Chdir(repoDir)
@@ -138,7 +139,7 @@ func gitPush() {
 		fmt.Println("Failed to add files:", err)
 		return
 	}
-	if err := executeGitCommand("commit", "-m", "test"); err != nil {
+	if err := executeGitCommand("commit", "-m", commitMessage); err != nil {
 		fmt.Println("Failed to commit:", err)
 		return
 	}
