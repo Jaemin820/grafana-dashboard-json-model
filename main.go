@@ -47,6 +47,8 @@ func main() {
 			saveDashboardJSON(ALERT_RULES_READ_ONLY_API_KEY, grafanaHost, dashboard.UID, dashboard.Title, dashboard.FolderTitle)
 		}
 	}
+
+	gitPush()
 }
 
 func getAllDashboards(apiKey, grafanaHost string) ([]DashboardSearchResult, error) {
@@ -111,9 +113,6 @@ func saveDashboardJSON(apiKey, grafanaHost, uid, title, folderTitle string) {
 	}
 
 	fmt.Println("Saved dashboard", title, "to", filename)
-
-	commitMessage := "Saved dashboard" + title + "to" + filename
-	gitPush(commitMessage)
 
 }
 
