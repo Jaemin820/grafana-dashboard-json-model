@@ -48,7 +48,7 @@ func main() {
 		}
 	}
 
-	gitPush()
+	gitPush("Saved dashboard to json files")
 }
 
 func getAllDashboards(apiKey, grafanaHost string) ([]DashboardSearchResult, error) {
